@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { Handshake } from "./routes/handshake";
+import { Start } from "./routes/start";
+import { Routes, Route } from "react-router-dom";
+import { useEventHandler } from "./hooks/useEventHandler";
+import { Debug } from "./components/debug";
+import { ShowRole } from "./routes/showRole";
+import { FirstNight } from "./routes/firstNight";
+import { Sleeping } from "./routes/sleeping";
+import { Day } from "./routes/day";
 
 function App() {
-  const [count, setCount] = useState(0)
+  useEventHandler();
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+        <Route path="/" element={<Start />} />
+        <Route path="/handshake" element={<Handshake />} />
+        <Route path="/showRole" element={<ShowRole />} />
+        <Route path="/firstNight" element={<FirstNight />} />
+        <Route path="/sleeping" element={<Sleeping />} />
+        <Route path="/day" element={<Day />} />
+      </Routes>
+      <br />
+      <Debug />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
