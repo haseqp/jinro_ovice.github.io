@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useCrypto, usePublicKeyStore } from "../../hooks/useCrypto";
 import {
   useEmitOrLoopbackMessage,
@@ -8,27 +8,40 @@ import {
 } from "../../hooks/useOviceObject";
 import { useGameRole, useGenerateGameRoles } from "../../hooks/useGameRole";
 import { useNavigate } from "react-router-dom";
-import { useHost } from "../../hooks/useHost";
 import {
   type PublicKeyEvent,
   type RolesEvent,
 } from "../../hooks/useEventHandler";
+import { useHost } from "../../hooks/useHost";
+import { useAtom, atom } from "jotai";
 
-const useHandshake = (myId?: string) => {
+const sentBroadcastAtom = atom(false);
+
+const useHandshake = () => {
   const broadcast = useBroadcastMessage();
   const { publicKey } = useCrypto();
+  const { addPublicKey } = usePublicKeyStore();
+  const { myId } = useMyself();
+  const [ sentBroadcast, setSentBroadcast] = useAtom(sentBroadcastAtom);
+  const sentBroadcastRef = useRef(sentBroadcast);
 
   useEffect(() => {
     if (publicKey === undefined || myId === undefined) {
       return;
     }
+    if (sentBroadcastRef.current) {
+      return;
+    }
+    sentBroadcastRef.current = true;
+    setSentBroadcast(true);
+    addPublicKey(myId, publicKey);
     const event: PublicKeyEvent = {
       type: "publicKey",
       id: myId,
       publicKey,
     };
     broadcast(event);
-  }, [publicKey, myId, broadcast]);
+  }, [publicKey, myId, broadcast, addPublicKey, setSentBroadcast]);
 };
 
 const useNavigateToShowRole = () => {
@@ -48,14 +61,21 @@ const useNavigateToShowRole = () => {
   }, [myRole, navigate, publicKeyStore, participants]);
 };
 
-const HandshakeForGuest = (myId?: string) => {
-  useHandshake(myId);
+const HandshakeForGuest = () => {
+  useHandshake();
   useNavigateToShowRole();
+
+  useEffect(() => {
+    console.log("guest");
+    return () => {
+      console.log("dettached3");
+    };
+  }, []);
 
   return null;
 };
 
-const HandshakeForHost = (myId?: string) => {
+const HandshakeForHost = () => {
   const { publicKeyStore } = usePublicKeyStore();
   const participants = useParticipants();
   const emit = useEmitOrLoopbackMessage();
@@ -67,13 +87,17 @@ const HandshakeForHost = (myId?: string) => {
   const roles = useGenerateGameRoles(ids);
   const { setGameRoles } = useGameRole();
 
-  useHandshake(myId);
+  useHandshake();
   useNavigateToShowRole();
 
   useEffect(() => {
-    if (myId === undefined) {
-      return;
-    }
+    console.log("host");
+    return () => {
+      console.log("dettached3");
+    };
+  }, []);
+
+  useEffect(() => {
     if (publicKeyStore?.size !== participants.length) {
       return;
     }
@@ -98,21 +122,17 @@ const HandshakeForHost = (myId?: string) => {
         console.error(e);
       }
     })();
-    return () => {
-      console.log("dettached");
-    };
-  }, [publicKeyStore, participants, roles, encrypt, emit, myId, setGameRoles]);
+  }, [publicKeyStore, participants, roles, encrypt, emit, setGameRoles]);
 
   return null;
 };
 
 export const Handshake = () => {
   const { isHost } = useHost();
-  const { myId } = useMyself();
 
-  if (isHost === undefined || myId === undefined) {
+  if (isHost === undefined) {
     return null;
   }
 
-  return isHost ? HandshakeForHost(myId) : HandshakeForGuest(myId);
+  return isHost ? (<HandshakeForHost/>) : (<HandshakeForGuest/>);
 };

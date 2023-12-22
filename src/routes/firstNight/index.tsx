@@ -65,6 +65,17 @@ export const FirstNight = () => {
     navigate("/sleeping");
   }, [navigate]);
 
+  useEffect(() => {
+    if (myRole === undefined) {
+      return;
+    }
+    if (myRole.role === "wolf" || myRole.role === "seer") {
+      return;
+    }
+    toNavigate();
+
+  }, [toNavigate, myRole]);
+
   if (myRole === undefined) {
     return null;
   } else if (myRole.role === "wolf") {
@@ -72,7 +83,6 @@ export const FirstNight = () => {
   } else if (myRole.role === "seer") {
     return <SeerNight onClick={toNavigate} />;
   } else {
-    toNavigate();
     return null;
   }
 };

@@ -1,11 +1,11 @@
-import { useEffect, useCallback } from "react";
-import { useAtom, atom } from "jotai";
+import { useCallback } from "react";
+import { useAtom, atom, useAtomValue } from "jotai";
 
 async function generateKey(): Promise<CryptoKeyPair> {
   return await window.crypto.subtle.generateKey(
     {
       name: "RSA-OAEP",
-      modulusLength: 4096,
+      modulusLength: 2048,
       publicExponent: new Uint8Array([1, 0, 1]),
       hash: "SHA-256",
     },
@@ -14,52 +14,67 @@ async function generateKey(): Promise<CryptoKeyPair> {
   );
 }
 
-const publicKeyAtom = atom<CryptoKey | undefined>(undefined);
-const privateKeyAtom = atom<CryptoKey | undefined>(undefined);
+const keyPairAtom = atom<Promise<CryptoKeyPair>>(generateKey());
 
 const publicKeyStores = atom<Map<string, CryptoKey>>(new Map());
 
+
+function concatBuffer(segments: ArrayBuffer[])
+{
+    let sumLength = 0;
+    for(let i = 0; i < segments.length; ++i){
+        sumLength += segments[i].byteLength;
+    }
+    const whole = new Uint8Array(sumLength);
+    let pos = 0;
+    for(let i = 0; i < segments.length; ++i){
+        whole.set(new Uint8Array(segments[i]),pos);
+        pos += segments[i].byteLength;
+    }
+    return whole.buffer;
+}
+
 export const useCrypto = () => {
-  const [publicKey, setPublicKey] = useAtom(publicKeyAtom);
-  const [privateKey, setPrivateKey] = useAtom(privateKeyAtom);
+  const keyPair =  useAtomValue(keyPairAtom);
   const encrypt = useCallback(async (message: string, publicKey: CryptoKey) => {
     const encoded = new TextEncoder().encode(message);
-    console.log(encoded, publicKey);
-    return await window.crypto.subtle.encrypt(
-      {
-        name: "RSA-OAEP",
-      },
-      publicKey,
-      encoded,
-    );
+    const array = [];
+    const chunkSize = 190;
+    for (let i = 0; i < encoded.length; i += chunkSize) {
+      array.push(encoded.slice(i, i + chunkSize));
+    }
+    const result = [];
+    for (const chunk of array) {
+      result.push(
+        await window.crypto.subtle.encrypt(
+          {
+            name: "RSA-OAEP",
+          },
+          publicKey,
+          chunk,
+        ));
+    }
+    return result;
   }, []);
   const decrypt = useCallback(
-    async (message: ArrayBuffer, privateKey: CryptoKey) => {
-      const decoded = await window.crypto.subtle.decrypt(
-        {
-          name: "RSA-OAEP",
-        },
-        privateKey,
-        message,
-      );
-      return new TextDecoder().decode(decoded);
+    async (message: ArrayBuffer[], privateKey: CryptoKey) => {
+      const segments:ArrayBuffer[] = [];
+      for (const chunk of message) {
+        const decoded = await window.crypto.subtle.decrypt(
+          {
+            name: "RSA-OAEP",
+          },
+          privateKey,
+          chunk,
+        );
+        segments.push(decoded);
+      }
+      return new TextDecoder().decode(concatBuffer(segments));
     },
     [],
   );
 
-  useEffect(() => {
-    if (publicKey !== undefined && privateKey !== undefined) {
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    (async () => {
-      const keyPair = await generateKey();
-      setPublicKey(keyPair.publicKey);
-      setPrivateKey(keyPair.privateKey);
-    })();
-  }, [setPublicKey, setPrivateKey, publicKey, privateKey]);
-
-  return { publicKey, privateKey, encrypt, decrypt };
+  return { publicKey: keyPair.publicKey, privateKey: keyPair.privateKey, encrypt, decrypt };
 };
 
 export const usePublicKeyStore = () => {
@@ -67,14 +82,16 @@ export const usePublicKeyStore = () => {
 
   const addPublicKey = useCallback(
     (id: string, publicKey: CryptoKey) => {
-      setPublicKeyStore((old) => {
-        const newMap = new Map(old);
-        newMap.set(id, publicKey);
-        return newMap;
-      });
-    },
-    [setPublicKeyStore],
-  );
+     setPublicKeyStore((old) => {
+      if (old.has(id)) {
+        return old;
+      }
+      const newMap = new Map(old);
+      newMap.set(id, publicKey);
+      return newMap;
+    });
+  },
+  [setPublicKeyStore]);
 
   const getPublicKey = useCallback(
     (id: string) => {

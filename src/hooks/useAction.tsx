@@ -38,7 +38,7 @@ export const useAction = () => {
   const [turn, increaseTurn] = useAtom(increaseTurnAtom);
 
   const act = useCallback(
-    (turn: number) => {
+    (actions: Action[], turn: number) => {
       if (gameRoles === undefined) {
         return;
       }
@@ -62,24 +62,25 @@ export const useAction = () => {
         );
       }
     },
-    [actions, gameRoles, setGameRoles, increaseTurn],
+    [gameRoles, setGameRoles, increaseTurn],
   );
 
   const setActionForId = useCallback(
     (turn: number, id: string, action: string, targetId?: string) => {
-      if (
-        actions.filter((a: Action) => a.turn === turn && a.id === id).length !==
-        0
-      ) {
-        return;
-      }
-      setActions((old: Action[]) => [
+      setActions((old: Action[]) => {
+        if (old.filter((a: Action) => a.turn === turn && a.id === id).length !== 0) {
+          return old;
+        }
+        const newActions = [
         ...old,
         { action, id, turn, targetId: targetId ?? id },
-      ]);
+        ];
+        act(newActions, turn);
+        return newActions;
+      });
     },
-    [setActions, actions],
+    [setActions, act],
   );
 
-  return { setActionForId, act, turn };
+  return { setActionForId, turn };
 };

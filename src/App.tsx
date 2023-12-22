@@ -8,20 +8,27 @@ import { ShowRole } from "./routes/showRole";
 import { FirstNight } from "./routes/firstNight";
 import { Sleeping } from "./routes/sleeping";
 import { Day } from "./routes/day";
+import { Suspense } from "react";
+
+function Loading() {
+  return <p>Loading...</p>;
+}
 
 function App() {
   useEventHandler();
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Start />} />
-        <Route path="/handshake" element={<Handshake />} />
-        <Route path="/showRole" element={<ShowRole />} />
-        <Route path="/firstNight" element={<FirstNight />} />
-        <Route path="/sleeping" element={<Sleeping />} />
-        <Route path="/day" element={<Day />} />
-      </Routes>
+      <Suspense fallback={<Loading/>}>
+        <Routes>
+            <Route path="/" element={<Start />} />
+            <Route path="/handshake" element={<Handshake />} />
+            <Route path="/showRole" element={<ShowRole />} />
+            <Route path="/firstNight" element={<FirstNight />} />
+            <Route path="/sleeping" element={<Sleeping />} />
+            <Route path="/day" element={<Day />} />
+        </Routes>
+      </Suspense>
       <br />
       <Debug />
     </>

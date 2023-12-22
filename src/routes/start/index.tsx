@@ -1,10 +1,21 @@
 import { useParticipants } from "../../hooks/useOviceObject";
 import { Button, Avatar, Stack, Box } from "@mui/material";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePublicKeyStore } from "../../hooks/useCrypto";
 
 export const Start = () => {
   const participants = useParticipants();
   const navigate = useNavigate();
+  const { publicKeyStore } = usePublicKeyStore();
+
+  useEffect(() => {
+    if (publicKeyStore?.size === 0) {
+      return;
+    }
+    navigate("/handshake");
+  }, [publicKeyStore, navigate]);
+
   return (
     <>
       <Stack spacing={2}>

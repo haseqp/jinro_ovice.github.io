@@ -5,7 +5,7 @@ import {
   colors,
   animals,
 } from "unique-names-generator";
-import { participantsAtom } from "../../hooks/useOviceObject";
+import { participantsAtom, useMyself } from "../../hooks/useOviceObject";
 import { useAtom, useAtomValue } from "jotai";
 import { useCrypto } from "../../hooks/useCrypto";
 import { useAction } from "../../hooks/useAction";
@@ -44,12 +44,16 @@ const AddParticipantButton = () => {
 const SendPublicKeys = () => {
   const [participants] = useAtom(participantsAtom);
   const { publicKey } = useCrypto();
+  const { myId } = useMyself();
 
   return (
     <Button
       variant="text"
       onClick={() => {
         participants.forEach((participant) => {
+          if (participant.id === myId) {
+            return;
+          }
           const event = { type: "publicKey", id: participant.id, publicKey };
           window.postMessage({ type: "ovice_message", payload: event }, "*");
         });
@@ -65,6 +69,7 @@ const SendSleeping = () => {
   const { turn } = useAction();
   const { publicKey } = useCrypto();
   const { encrypt } = useCrypto();
+  const { myId } = useMyself();
   return (
     <Button
       variant="text"
@@ -74,6 +79,9 @@ const SendSleeping = () => {
         }
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         participants.forEach(async (participant) => {
+          if (participant.id === myId) {
+            return;
+          }
           const data = await encrypt(
             JSON.stringify({ action: "nothing" }),
             publicKey,

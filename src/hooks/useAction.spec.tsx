@@ -13,9 +13,9 @@ describe("useNightAction", () => {
     const hook = renderHook(
       () => {
         const { gameRoles, setGameRoles } = useGameRole();
-        const { setActionForId, act, turn } = useAction();
+        const { setActionForId, turn } = useAction();
 
-        return { gameRoles, setGameRoles, setActionForId, act, turn };
+        return { gameRoles, setGameRoles, setActionForId, turn };
       },
       { wrapper },
     );
@@ -39,8 +39,6 @@ describe("useNightAction", () => {
     hook.result.current.setActionForId(0, "4", "protect", "3");
     hook.rerender();
     expect(hook.result.current.turn).toBe(0);
-    hook.result.current.act(0);
-    hook.rerender();
     expect(hook.result.current.gameRoles.get("2")?.isDead).toBeTruthy();
     expect(hook.result.current.turn).toBe(1);
   });
@@ -50,8 +48,6 @@ describe("useNightAction", () => {
     hook.result.current.setActionForId(0, "2", "nothing");
     hook.result.current.setActionForId(0, "3", "nothing");
     hook.result.current.setActionForId(0, "4", "protect", "2");
-    hook.rerender();
-    hook.result.current.act(0);
     hook.rerender();
     expect(hook.result.current.gameRoles.get("2")?.isDead).toBeFalsy();
   });

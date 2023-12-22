@@ -15,7 +15,7 @@ export type NightActionEvent = {
   type: "nightAction";
   turn: number;
   id: string;
-  action: ArrayBuffer;
+  action: ArrayBuffer[];
 } & BaseEvent;
 
 export type PublicKeyEvent = {
@@ -24,13 +24,13 @@ export type PublicKeyEvent = {
 } & BaseEvent;
 
 export type RolesEvent = {
-  roles: ArrayBuffer;
+  roles: ArrayBuffer[];
 } & BaseEvent;
 
 const useNightActionEvent = () => {
   const { privateKey, decrypt } = useCrypto();
   const { isHost } = useHost();
-  const { setActionForId, act } = useAction();
+  const { setActionForId } = useAction();
   const onMessage = useCallback(
     async (message: NightActionEvent) => {
       if (message.type !== "nightAction") {
@@ -47,9 +47,8 @@ const useNightActionEvent = () => {
         await decrypt(message.action, privateKey),
       ) as Action;
       setActionForId(message.turn, message.id, action.action, action.targetId);
-      act(message.turn);
     },
-    [privateKey, decrypt, isHost, setActionForId, act],
+    [privateKey, decrypt, isHost, setActionForId],
   );
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -81,15 +80,19 @@ const useRolesEvent = () => {
 
   const onMessage = useCallback(
     async (message: RolesEvent) => {
-      if (privateKey === undefined || decrypt === undefined) {
-        return;
-      }
-      if (message.type === "roles") {
-        const roles = new Map<string, GameRole>(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          Object.entries(JSON.parse(await decrypt(message.roles, privateKey))),
-        );
-        setGameRoles(roles);
+      try {
+        if (privateKey === undefined || decrypt === undefined) {
+          return;
+        }
+        if (message.type === "roles") {
+          const roles = new Map<string, GameRole>(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            Object.entries(JSON.parse(await decrypt(message.roles, privateKey))),
+          );
+          setGameRoles(roles);
+        }
+      } catch (e) {
+        console.error(e);
       }
     },
     [privateKey, decrypt, setGameRoles],

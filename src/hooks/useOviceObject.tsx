@@ -40,7 +40,8 @@ export const useMyself = () => {
     () => participants.find((participant) => participant.isSelf),
     [participants],
   );
-  const myId = useMemo(() => myself?.id, [myself]);
+  //const myId = useMemo(() => myself?.id, [myself?.id]);
+  const myId = useMemo(() => {console.log("hoge"); return myself?.id}, [myself?.id]);
 
   return { myself, myId };
 };
