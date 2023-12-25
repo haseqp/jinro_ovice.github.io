@@ -9,14 +9,14 @@ export const Night = () => {
   const navigate = useNavigate();
 
   const toNavigate = useCallback(() => {
-    navigate("/sleeping");
+    navigate("/waiting");
   }, [navigate]);
 
   if (myRole?.role === "wolf") {
     return (
       <WolfNight
         onClick={(action: WolfAction) => {
-          navigate("/sleeping", { state: { action } });
+          navigate("/waiting", { state: { action, next: "/day" } });
         }}
       />
     );

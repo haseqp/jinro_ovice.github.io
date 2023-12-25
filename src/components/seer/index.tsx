@@ -34,7 +34,7 @@ export const SeerNight = ({ onClick }: { onClick: () => void }) => {
         </>
       ) : (
         <>
-          <h1>Select someone to see their role</h1>
+          <h1>Select anyone to see their role</h1>
           {seeableParticipants.map((participant: Participant) => (
             <Grid key={participant.id} container direction="column" spacing={0}>
               <SelectableParticipant

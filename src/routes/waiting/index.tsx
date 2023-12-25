@@ -9,13 +9,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCrypto, usePublicKeyStore } from "../../hooks/useCrypto";
 import { useAction } from "../../hooks/useAction";
 
-export const Sleeping = () => {
+export const Waiting = () => {
   const emit = useEmitOrLoopbackMessage();
   const { turn } = useAction();
   const { myId } = useMyself();
   const navigate = useNavigate();
   const countRef = useRef<number>(turn);
   const action = useLocation().state?.action;
+  const next = useLocation().state?.next as string;
   const { encrypt } = useCrypto();
   const participants = useParticipants();
   const { publicKeyStore } = usePublicKeyStore();
@@ -33,7 +34,7 @@ export const Sleeping = () => {
           publicKey,
         );
         emit(participant.id, {
-          type: "nightAction",
+          type: "action",
           id: myId,
           turn: countRef.current,
           action: encrypted,
@@ -44,8 +45,8 @@ export const Sleeping = () => {
 
   useEffect(() => {
     if (countRef.current !== turn) {
-      navigate("/day");
+      navigate(next);
     }
-  }, [turn, navigate]);
+  }, [turn, navigate, next]);
   return <h1>Waiting for the morning</h1>;
 };

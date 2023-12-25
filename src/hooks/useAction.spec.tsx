@@ -5,7 +5,7 @@ import { renderHook, act } from "@testing-library/react";
 import { Provider } from "jotai";
 import type { ReactNode } from "react";
 
-describe("useNightAction", () => {
+describe("useAction", () => {
   const setup = () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider>{children}</Provider>
@@ -37,8 +37,8 @@ describe("useNightAction", () => {
     hook.result.current.setActionForId(0, "2", "nothing");
     hook.result.current.setActionForId(0, "3", "nothing");
     hook.result.current.setActionForId(0, "4", "protect", "3");
-    hook.rerender();
     expect(hook.result.current.turn).toBe(0);
+    hook.rerender();
     expect(hook.result.current.gameRoles.get("2")?.isDead).toBeTruthy();
     expect(hook.result.current.turn).toBe(1);
   });
@@ -50,5 +50,23 @@ describe("useNightAction", () => {
     hook.result.current.setActionForId(0, "4", "protect", "2");
     hook.rerender();
     expect(hook.result.current.gameRoles.get("2")?.isDead).toBeFalsy();
+  });
+  it("should be executed most voted", () => {
+    const hook = setup();
+    hook.result.current.setActionForId(0, "1", "vote", "3");
+    hook.result.current.setActionForId(0, "2", "vote", "3");
+    hook.result.current.setActionForId(0, "3", "vote", "2");
+    hook.result.current.setActionForId(0, "4", "vote", "1");
+    hook.rerender();
+    expect(hook.result.current.gameRoles.get("3")?.isDead).toBeTruthy();
+  });
+  it("should be executed most voted and less sortkey", () => {
+    const hook = setup();
+    hook.result.current.setActionForId(0, "1", "vote", "4");
+    hook.result.current.setActionForId(0, "2", "vote", "4");
+    hook.result.current.setActionForId(0, "3", "vote", "2");
+    hook.result.current.setActionForId(0, "4", "vote", "2");
+    hook.rerender();
+    expect(hook.result.current.gameRoles.get("2")?.isDead).toBeTruthy();
   });
 });

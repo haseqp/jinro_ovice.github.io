@@ -20,6 +20,10 @@ const increaseTurnAtom = atom(
   },
 );
 
+type GameRoleWithCount = {
+  count: number;
+} & GameRole;
+
 const findTarget = (
   actions: Action[],
   turn: number,
@@ -29,11 +33,28 @@ const findTarget = (
   return actions
     .filter((a: Action) => a.action === action && a.turn === turn)
     .map((a: Action) => gameRoles.get(a.targetId))
-    .sort((a, b) => a?.sortKey.localeCompare(b?.sortKey ?? "") ?? 0)[0];
+    .reduce((acc: GameRoleWithCount[], cur: GameRole | undefined) => {
+      if (cur === undefined) {
+        return acc;
+      }
+      const found = acc.find((a: GameRoleWithCount) => a.id === cur.id);
+      if (found === undefined) {
+        return [...acc, { ...cur, count: 1 }];
+      } else {
+        found.count++;
+        return acc;
+      }
+    }, [])
+    .sort((a, b) => {
+      if (a?.count === b?.count) {
+        return a?.sortKey.localeCompare(b?.sortKey ?? "") ?? 0;
+      }
+      return (b?.count ?? 0) - (a?.count ?? 0);
+    })[0];
 };
 
 export const useAction = () => {
-  const [actions, setActions] = useAtom(actionAtom);
+  const [, setActions] = useAtom(actionAtom);
   const { gameRoles, setGameRoles } = useGameRole();
   const [turn, increaseTurn] = useAtom(increaseTurnAtom);
 
@@ -50,6 +71,7 @@ export const useAction = () => {
       increaseTurn();
       const attackedByWolf = findTarget(actions, turn, "attack", gameRoles);
       const protectedByHunter = findTarget(actions, turn, "protect", gameRoles);
+      const executed = findTarget(actions, turn, "vote", gameRoles);
       if (
         attackedByWolf !== undefined &&
         attackedByWolf.id !== protectedByHunter?.id
@@ -59,6 +81,12 @@ export const useAction = () => {
             new Map(
               old.set(attackedByWolf.id, { ...attackedByWolf, isDead: true }),
             ),
+        );
+      }
+      if (executed !== undefined) {
+        setGameRoles(
+          (old: Map<string, GameRole>) =>
+            new Map(old.set(executed.id, { ...executed, isDead: true })),
         );
       }
     },

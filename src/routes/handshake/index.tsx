@@ -65,13 +65,6 @@ const HandshakeForGuest = () => {
   useHandshake();
   useNavigateToShowRole();
 
-  useEffect(() => {
-    console.log("guest");
-    return () => {
-      console.log("dettached3");
-    };
-  }, []);
-
   return null;
 };
 
@@ -89,13 +82,6 @@ const HandshakeForHost = () => {
 
   useHandshake();
   useNavigateToShowRole();
-
-  useEffect(() => {
-    console.log("host");
-    return () => {
-      console.log("dettached3");
-    };
-  }, []);
 
   useEffect(() => {
     if (publicKeyStore?.size !== participants.length) {

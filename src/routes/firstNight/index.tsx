@@ -62,7 +62,7 @@ export const FirstNight = () => {
   const navigate = useNavigate();
 
   const toNavigate = useCallback(() => {
-    navigate("/sleeping");
+    navigate("/waiting", { state: { next: "/day" } });
   }, [navigate]);
 
   useEffect(() => {

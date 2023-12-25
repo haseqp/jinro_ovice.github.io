@@ -11,8 +11,15 @@ export interface BaseEvent {
   type: string;
 }
 
-export type NightActionEvent = {
-  type: "nightAction";
+export type ActionEvent = {
+  type: "action";
+  turn: number;
+  id: string;
+  action: ArrayBuffer[];
+} & BaseEvent;
+
+export type DayActionEvent = {
+  type: "dayAction";
   turn: number;
   id: string;
   action: ArrayBuffer[];
@@ -27,13 +34,13 @@ export type RolesEvent = {
   roles: ArrayBuffer[];
 } & BaseEvent;
 
-const useNightActionEvent = () => {
+const useActionEvent = () => {
   const { privateKey, decrypt } = useCrypto();
   const { isHost } = useHost();
   const { setActionForId } = useAction();
   const onMessage = useCallback(
-    async (message: NightActionEvent) => {
-      if (message.type !== "nightAction") {
+    async (message: ActionEvent) => {
+      if (message.type !== "action") {
         return;
       }
       if (
@@ -105,5 +112,5 @@ const useRolesEvent = () => {
 export const useEventHandler = () => {
   usePublicKeyEvent();
   useRolesEvent();
-  useNightActionEvent();
+  useActionEvent();
 };

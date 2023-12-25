@@ -6,7 +6,7 @@ import { useEventHandler } from "./hooks/useEventHandler";
 import { Debug } from "./components/debug";
 import { ShowRole } from "./routes/showRole";
 import { FirstNight } from "./routes/firstNight";
-import { Sleeping } from "./routes/sleeping";
+import { Waiting } from "./routes/sleeping";
 import { Day } from "./routes/day";
 import { Suspense } from "react";
 
@@ -25,7 +25,7 @@ function App() {
             <Route path="/handshake" element={<Handshake />} />
             <Route path="/showRole" element={<ShowRole />} />
             <Route path="/firstNight" element={<FirstNight />} />
-            <Route path="/sleeping" element={<Sleeping />} />
+            <Route path="/sleeping" element={<Waiting />} />
             <Route path="/day" element={<Day />} />
         </Routes>
       </Suspense>
