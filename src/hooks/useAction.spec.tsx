@@ -69,4 +69,41 @@ describe("useAction", () => {
     hook.rerender();
     expect(hook.result.current.gameRoles.get("2")?.isDead).toBeTruthy();
   });
+  it("should not be necessary for dead participant", () => {
+    const hook = setup();
+    expect(hook.result.current.turn).toBe(0);
+    hook.result.current.setGameRoles((prev) => {
+      const next = new Map(prev);
+      const found = next.get("2");
+      if (found !== undefined) {
+        found.isDead = true;
+      }
+      return next;
+    });
+    hook.result.current.setActionForId(0, "1", "vote", "3");
+    hook.result.current.setActionForId(0, "3", "vote", "1");
+    hook.result.current.setActionForId(0, "4", "vote", "1");
+    hook.rerender();
+    expect(hook.result.current.gameRoles.get("1")?.isDead).toBeTruthy();
+    expect(hook.result.current.turn).toBe(1);
+  });
+  it("should ignore action from dead participant", () => {
+    const hook = setup();
+    expect(hook.result.current.turn).toBe(0);
+    hook.result.current.setGameRoles((prev) => {
+      const next = new Map(prev);
+      const found = next.get("2");
+      if (found !== undefined) {
+        found.isDead = true;
+      }
+      return next;
+    });
+    hook.result.current.setActionForId(0, "1", "vote", "3");
+    hook.result.current.setActionForId(0, "2", "vote", "1");
+    hook.result.current.setActionForId(0, "3", "vote", "3");
+    hook.result.current.setActionForId(0, "4", "vote", "1");
+    hook.rerender();
+    expect(hook.result.current.gameRoles.get("3")?.isDead).toBeTruthy();
+    expect(hook.result.current.turn).toBe(1);
+  });
 });

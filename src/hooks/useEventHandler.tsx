@@ -18,13 +18,6 @@ export type ActionEvent = {
   action: ArrayBuffer[];
 } & BaseEvent;
 
-export type DayActionEvent = {
-  type: "dayAction";
-  turn: number;
-  id: string;
-  action: ArrayBuffer[];
-} & BaseEvent;
-
 export type PublicKeyEvent = {
   publicKey: CryptoKey;
   id: string;

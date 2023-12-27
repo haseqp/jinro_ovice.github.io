@@ -48,5 +48,5 @@ export const Waiting = () => {
       navigate(next);
     }
   }, [turn, navigate, next]);
-  return <h1>Waiting for the morning</h1>;
+  return <h1>Waiting for others</h1>;
 };

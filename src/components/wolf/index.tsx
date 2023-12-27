@@ -1,7 +1,7 @@
 import { type Participant } from "../../hooks/useOviceObject";
-import { SelectableParticipant } from "../SelectableParticipant";
+import { SelectableParticipantStack } from "../SelectableParticipantStack";
 import { useWolf } from "../../hooks/useWolf";
-import { Grid } from "@mui/material";
+import { Stack } from "@mui/material";
 
 export interface WolfAction {
   type: "attack";
@@ -13,23 +13,24 @@ export const WolfNight = ({
 }: {
   onClick: (action: WolfAction) => void;
 }) => {
-  const { attackableParticipants } = useWolf();
+  const attackableParticipants = useWolf();
   return (
     <div>
       <h1>Select someone to see their role</h1>
+      <Stack spacing={2}>
       {attackableParticipants.map((participant: Participant) => (
-        <Grid key={participant.id} container direction="column" spacing={0}>
-          <SelectableParticipant
-            participant={participant}
-            onClick={() => {
-              onClick({
-                type: "attack",
-                targetId: participant.id,
-              });
-            }}
-          />
-        </Grid>
+        <SelectableParticipantStack
+          key={participant.id}
+          participant={participant}
+          onClick={() => {
+            onClick({
+              type: "attack",
+              targetId: participant.id,
+            });
+          }}
+        />
       ))}
+      </Stack>
     </div>
   );
 };

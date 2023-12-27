@@ -2,6 +2,8 @@ import { useCallback } from "react";
 import { useGameRole } from "./useGameRole";
 import type { GameRole } from "./useGameRole";
 import { atom, useAtom } from "jotai";
+import { useExecute } from "./useExecute";
+import { useTurn } from "./useTurn";
 
 export interface Action {
   turn: number;
@@ -11,14 +13,6 @@ export interface Action {
 }
 
 const actionAtom = atom<Action[]>([]);
-
-const turnAtom = atom<number>(0);
-const increaseTurnAtom = atom(
-  (get) => get(turnAtom),
-  (_get, set) => {
-    set(turnAtom, (prev) => prev + 1);
-  },
-);
 
 type GameRoleWithCount = {
   count: number;
@@ -55,16 +49,19 @@ const findTarget = (
 
 export const useAction = () => {
   const [, setActions] = useAtom(actionAtom);
-  const { gameRoles, setGameRoles } = useGameRole();
-  const [turn, increaseTurn] = useAtom(increaseTurnAtom);
+  const { gameRoles } = useGameRole();
+  const { turn, increaseTurn } = useTurn();
+  const execute = useExecute();
 
   const act = useCallback(
     (actions: Action[], turn: number) => {
       if (gameRoles === undefined) {
         return;
       }
+      const aliveCount = Array.from(gameRoles.values()).reduce((acc:number, cur: GameRole) => acc + ((cur.isDead ?? false) ? 0 : 1), 0);
+
       if (
-        actions.filter((a: Action) => a.turn === turn).length !== gameRoles.size
+        actions.filter((a: Action) => a.turn === turn).length !== aliveCount
       ) {
         return;
       }
@@ -76,27 +73,23 @@ export const useAction = () => {
         attackedByWolf !== undefined &&
         attackedByWolf.id !== protectedByHunter?.id
       ) {
-        setGameRoles(
-          (old: Map<string, GameRole>) =>
-            new Map(
-              old.set(attackedByWolf.id, { ...attackedByWolf, isDead: true }),
-            ),
-        );
+        execute(attackedByWolf.id, turn);
       }
       if (executed !== undefined) {
-        setGameRoles(
-          (old: Map<string, GameRole>) =>
-            new Map(old.set(executed.id, { ...executed, isDead: true })),
-        );
+        execute(executed.id, turn);
       }
     },
-    [gameRoles, setGameRoles, increaseTurn],
+    [gameRoles, execute, increaseTurn],
   );
 
   const setActionForId = useCallback(
     (turn: number, id: string, action: string, targetId?: string) => {
       setActions((old: Action[]) => {
         if (old.filter((a: Action) => a.turn === turn && a.id === id).length !== 0) {
+          return old;
+        }
+        const gameRole = gameRoles.get(id);
+        if (gameRole?.isDead ?? false) {
           return old;
         }
         const newActions = [
@@ -107,7 +100,7 @@ export const useAction = () => {
         return newActions;
       });
     },
-    [setActions, act],
+    [setActions, act, gameRoles],
   );
 
   return { setActionForId, turn };

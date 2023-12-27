@@ -1,8 +1,9 @@
 import { type Participant } from "../../hooks/useOviceObject";
-import { SelectableParticipant } from "../SelectableParticipant";
+import { SelectableParticipantStack } from "../SelectableParticipantStack";
 import { useSeeRole, useSeeableParticipants } from "../../hooks/useSeer";
-import { useState } from "react";
-import { Button, Grid } from "@mui/material";
+import { useState, useRef, useEffect } from "react";
+import { Button, Stack } from "@mui/material";
+import { ParticipantWithRoleStack } from "../ParticipantWithRoleStack";
 
 interface SeerNightSelected {
   participant: Participant;
@@ -15,39 +16,54 @@ export const SeerNight = ({ onClick }: { onClick: () => void }) => {
   );
   const seeRole = useSeeRole();
   const seeableParticipants = useSeeableParticipants();
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  useEffect(() => {
+    setParticipants((prev) => {
+      if (prev.length === 0) {
+        return seeableParticipants;
+      }
+      return prev;
+    });
+  }, [seeableParticipants]);
 
   return (
     <div>
-      {selected !== undefined ? (
-        <>
-          <h1>
-            {selected.participant.name} is {selected.role}
-          </h1>
+      {selected === undefined ? (
+          <h1>Select anyone to see their role</h1>
+      ) : (
+        <h1>
+          {selected.participant.name} is {selected.role}
+        </h1>
+      )}
+        <Stack spacing={2}>
+        {participants.map((participant: Participant) => 
+          selected?.participant.id === participant.id ? (
+            <ParticipantWithRoleStack
+              key={participant.id}
+              participant={participant}
+              gameRole={{role: selected.role }}/>
+          ) : (
+            <SelectableParticipantStack
+            key={participant.id}
+              participant={participant}
+              enabled={selected === undefined}
+              onClick={() => {
+                const role = seeRole(participant.id);
+                setSelected({ participant, role });
+              }}
+            />
+        ))}
+        </Stack>
+        {selected !== undefined && (
           <Button
             variant="text"
             onClick={() => {
               onClick();
             }}
           >
-            OK
+            Next
           </Button>
-        </>
-      ) : (
-        <>
-          <h1>Select anyone to see their role</h1>
-          {seeableParticipants.map((participant: Participant) => (
-            <Grid key={participant.id} container direction="column" spacing={0}>
-              <SelectableParticipant
-                participant={participant}
-                onClick={() => {
-                  const role = seeRole(participant.id);
-                  setSelected({ participant, role });
-                }}
-              />
-            </Grid>
-          ))}
-        </>
-      )}
+        )}
     </div>
   );
 };

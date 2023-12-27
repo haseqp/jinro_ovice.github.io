@@ -11,6 +11,7 @@ export interface GameRole {
   sawBySeer?: boolean;
   protectedByHunter?: boolean;
   isDead?: boolean;
+  deadAt?: number;
 }
 
 const gameRolesAtom = atom<Map<string, GameRole>>(new Map());

@@ -64,7 +64,7 @@ const SendPublicKeys = () => {
   );
 };
 
-const SendSleeping = () => {
+const SendNothing = () => {
   const participants = useAtomValue(participantsAtom);
   const { turn } = useAction();
   const { publicKey } = useCrypto();
@@ -87,7 +87,7 @@ const SendSleeping = () => {
             publicKey,
           );
           const event = {
-            type: "nightAction",
+            type: "action",
             id: participant.id,
             turn,
             action: data,
@@ -96,17 +96,56 @@ const SendSleeping = () => {
         });
       }}
     >
-      Send Night action
+      Send Nothing
     </Button>
   );
 };
+
+const VoteYou = () => {
+  const participants = useAtomValue(participantsAtom);
+  const { turn } = useAction();
+  const { publicKey } = useCrypto();
+  const { encrypt } = useCrypto();
+  const { myId } = useMyself();
+  return (
+    <Button
+      variant="text"
+      onClick={() => {
+        if (publicKey === undefined) {
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        participants.forEach(async (participant) => {
+          if (participant.id === myId) {
+            return;
+          }
+          const data = await encrypt(
+            JSON.stringify({ action: "vote", targetId: myId }),
+            publicKey,
+          );
+          const event = {
+            type: "action",
+            id: participant.id,
+            turn,
+            action: data,
+          };
+          window.postMessage({ type: "ovice_message", payload: event }, "*");
+        });
+      }}
+    >
+      Vote you
+    </Button>
+  );
+};
+
 
 export const Debug = () => {
   return (
     <>
       <AddParticipantButton />
       <SendPublicKeys />
-      <SendSleeping />
+      <SendNothing />
+      <VoteYou />
     </>
   );
 };

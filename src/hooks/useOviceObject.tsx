@@ -27,6 +27,16 @@ participantsAtom.onMount = (update: (value: Participant[]) => void) => {
   ]);
 };
 
+export const useFindParticipantById = () => {
+  const [participants] = useAtom(participantsAtom);
+
+  const findParticipantById = useCallback((id: string) => {
+    return participants.find((participant) => participant.id === id);
+  }, [participants]);
+
+  return findParticipantById;
+};
+
 export const useParticipants = () => {
   const [participants] = useAtom(participantsAtom);
 
