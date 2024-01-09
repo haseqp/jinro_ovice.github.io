@@ -8,6 +8,7 @@ import { ShowRole } from "./routes/showRole";
 import { FirstNight } from "./routes/firstNight";
 import { Waiting } from "./routes/waiting";
 import { Executed } from "./routes/executed";
+import { Attacked } from "./routes/attacked";
 import { Day } from "./routes/day";
 import { Night } from "./routes/night";
 import { Suspense, useEffect } from "react";
@@ -41,6 +42,7 @@ function App() {
             <Route path="/firstNight" element={<FirstNight />} />
             <Route path="/waiting" element={<Waiting />} />
             <Route path="/day" element={<Day />} />
+            <Route path="/attacked" element={<Attacked />} />
             <Route path="/executed" element={<Executed />} />
             <Route path="/night" element={<Night />} />
             <Route path="/gameover" element={<Gameover />} />

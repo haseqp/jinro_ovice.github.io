@@ -20,5 +20,5 @@ export const useWolf = () => {
     [participants, gameRoles],
   );
 
-  return attackableParticipants;
+  return {attackableParticipants};
 };

@@ -1,7 +1,7 @@
 import { type Participant } from "../../hooks/useOviceObject";
 import { SelectableParticipantStack } from "../SelectableParticipantStack";
-import { useSeeRole, useSeeableParticipants } from "../../hooks/useSeer";
-import { useState, useRef, useEffect } from "react";
+import { useSeer } from "../../hooks/useSeer";
+import { useState, useEffect } from "react";
 import { Button, Stack } from "@mui/material";
 import { ParticipantWithRoleStack } from "../ParticipantWithRoleStack";
 
@@ -14,8 +14,7 @@ export const SeerNight = ({ onClick }: { onClick: () => void }) => {
   const [selected, setSelected] = useState<SeerNightSelected | undefined>(
     undefined,
   );
-  const seeRole = useSeeRole();
-  const seeableParticipants = useSeeableParticipants();
+  const { seeRole, seeableParticipants } = useSeer();
   const [participants, setParticipants] = useState<Participant[]>([]);
   useEffect(() => {
     setParticipants((prev) => {

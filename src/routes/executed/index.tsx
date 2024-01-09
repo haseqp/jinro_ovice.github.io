@@ -26,21 +26,24 @@ export const Executed = () => {
   ,[gameRoles, findParticipantById, lastTurn]);
   const winner = useWinner();
 
-  if (lastDeadParticipant === undefined) {
-    return null;
-  }
   return (
     <div>
-      <h1>{lastDeadParticipant.name} is executed</h1>
-      <Stack spacing={2}>
-      {lastParticipants.map((participant) => (
-        participant.id === lastDeadParticipant.id ? (
-          <DeadParticipantStack key={participant.id} participant={participant} />
+      { lastDeadParticipant === undefined ? (
+          <h1>No one is executed</h1>
         ) : (
-          <ParticipantStack key={participant.id} participant={participant} />
-        )
-      ))}
-      </Stack>
+          <div>
+            <h1>{lastDeadParticipant.name} is executed</h1>
+            <Stack spacing={2}>
+              {lastParticipants.map((participant) => (
+                participant.id === lastDeadParticipant.id ? (
+                  <DeadParticipantStack key={participant.id} participant={participant} />
+                ) : (
+                  <ParticipantStack key={participant.id} participant={participant} />
+                )
+              ))}
+            </Stack>
+          </div>
+      )}
       <br/>
       <Button variant="contained" color="primary" onClick={() => {
         if (winner === undefined) {

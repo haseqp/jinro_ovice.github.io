@@ -1,30 +1,31 @@
 import { type Participant } from "../../hooks/useOviceObject";
 import { SelectableParticipantStack } from "../SelectableParticipantStack";
-import { useWolf } from "../../hooks/useWolf";
+import { useHunter } from "../../hooks/useHunter";
 import { Stack } from "@mui/material";
 
-export interface WolfAction {
-  type: "attack";
+export interface HunterAction {
+  type: "protect";
   targetId: string;
 }
 
-export const WolfNight = ({
+export const HunterNight = ({
   onClick,
 }: {
-  onClick: (action: WolfAction) => void;
+  onClick?: (action: HunterAction) => void;
 }) => {
-  const { attackableParticipants } = useWolf();
+  const { protect, protectableParticipants } = useHunter();
   return (
     <div>
-      <h1>Select someone to attack</h1>
+      <h1>Select someone to protect</h1>
       <Stack spacing={2}>
-      {attackableParticipants.map((participant: Participant) => (
+      {protectableParticipants.map((participant: Participant) => (
         <SelectableParticipantStack
           key={participant.id}
           participant={participant}
           onClick={() => {
-            onClick({
-              type: "attack",
+            protect(participant.id);
+            onClick?.({
+              type: "protect",
               targetId: participant.id,
             });
           }}

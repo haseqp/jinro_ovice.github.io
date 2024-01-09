@@ -9,6 +9,7 @@ import { participantsAtom, useMyself } from "../../hooks/useOviceObject";
 import { useAtom, useAtomValue } from "jotai";
 import { useCrypto } from "../../hooks/useCrypto";
 import { useAction } from "../../hooks/useAction";
+import { useMemo } from "react";
 
 const AddParticipantButton = () => {
   const [, setParticipants] = useAtom(participantsAtom);
@@ -101,12 +102,13 @@ const SendNothing = () => {
   );
 };
 
-const VoteYou = () => {
+const VoteAny = () => {
   const participants = useAtomValue(participantsAtom);
   const { turn } = useAction();
   const { publicKey } = useCrypto();
   const { encrypt } = useCrypto();
-  const { myId } = useMyself();
+
+  const minId = useMemo(() => participants.filter(a => !(a.isDead ?? false)).sort((a, b) => a.id.localeCompare(b.id))[0]?.id, [participants]);
   return (
     <Button
       variant="text"
@@ -116,11 +118,11 @@ const VoteYou = () => {
         }
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         participants.forEach(async (participant) => {
-          if (participant.id === myId) {
+          if (participant.id === minId) {
             return;
           }
           const data = await encrypt(
-            JSON.stringify({ action: "vote", targetId: myId }),
+            JSON.stringify({ action: "vote", targetId: minId }),
             publicKey,
           );
           const event = {
@@ -133,7 +135,7 @@ const VoteYou = () => {
         });
       }}
     >
-      Vote you
+      Vote any
     </Button>
   );
 };
@@ -145,7 +147,7 @@ export const Debug = () => {
       <AddParticipantButton />
       <SendPublicKeys />
       <SendNothing />
-      <VoteYou />
+      <VoteAny />
     </>
   );
 };

@@ -1,18 +1,18 @@
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useWolf } from "./useWolf";
+import { useHunter } from "./useHunter";
 import { participantsAtom } from "./useOviceObject";
 import { useGameRole } from "./useGameRole";
 import { useSetAtom } from "jotai";
 
-describe("useWolf", () => {
+describe("useHunter", () => {
   const setup = () => {
     const hook = renderHook(() => {
       const setParticipants = useSetAtom(participantsAtom);
       const { setGameRoles } = useGameRole();
-      const { attackableParticipants } = useWolf();
+      const { protectableParticipants, protect } = useHunter();
 
-      return { setParticipants, setGameRoles, attackableParticipants };
+      return { setParticipants, setGameRoles, protectableParticipants, protect };
     });
     hook.result.current.setParticipants([
       { name: "A", id: "1", avatar_url: "", isSelf: true },
@@ -32,8 +32,13 @@ describe("useWolf", () => {
   };
   it("should return attackable participants", () => {
     const hook = setup();
-    expect(hook.result.current.attackableParticipants).toMatchObject([
+    expect(hook.result.current.protectableParticipants).toMatchObject([
       { id: "2"}
     ]);
+    hook.result.current.protect("2");
+    hook.rerender();
+    expect(hook.result.current.protectableParticipants.length).toBe(0);
+
   });
 });
+

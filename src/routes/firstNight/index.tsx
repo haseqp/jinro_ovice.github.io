@@ -1,5 +1,6 @@
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { SeerNight } from "../../components/seer";
+import { HunterNight } from "../../components/hunter";
 import { useGameRole } from "../../hooks/useGameRole";
 import type { GameRole } from "../../hooks/useGameRole";
 import { useCallback, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import {
   useMyself,
 } from "../../hooks/useOviceObject";
 import { useNavigate } from "react-router-dom";
+import { ParticipantStack } from "../../components/ParticipantStack";
 
 export const WolfNight = ({ onClick }: { onClick: () => void }) => {
   const { gameRoles } = useGameRole();
@@ -38,11 +40,12 @@ export const WolfNight = ({ onClick }: { onClick: () => void }) => {
       ) : (
         <>
           <h1>Other Wolves</h1>
-          <ul>
+          <Stack spacing={2}>
             {otherWolves.map((wolf: Participant) => (
-              <li key={wolf.id}>{wolf.name}</li>
+              <ParticipantStack key={wolf.id} participant={wolf} />
             ))}
-          </ul>
+          </Stack>
+
         </>
       )}
       <Button
@@ -69,7 +72,7 @@ export const FirstNight = () => {
     if (myRole === undefined) {
       return;
     }
-    if (myRole.role === "wolf" || myRole.role === "seer") {
+    if (myRole.role === "wolf" || myRole.role === "seer" || myRole.role === "hunter") {
       return;
     }
     toNavigate();
@@ -82,6 +85,8 @@ export const FirstNight = () => {
     return <WolfNight onClick={toNavigate} />;
   } else if (myRole.role === "seer") {
     return <SeerNight onClick={toNavigate} />;
+  } else if (myRole.role === "hunter") {
+    return <HunterNight onClick={toNavigate} />;
   } else {
     return null;
   }

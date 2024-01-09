@@ -18,8 +18,9 @@ export const Start = () => {
     if (publicKeyStore?.size === 0) {
       return;
     }
+    setStarted(true);
     navigate("/handshake");
-  }, [publicKeyStore, navigate]);
+  }, [publicKeyStore, navigate, setStarted]);
 
   return (
     <>

@@ -58,7 +58,7 @@ const useNavigateToShowRole = () => {
       return;
     }
     navigate("/showRole");
-  }, [myRole, navigate, publicKeyStore, participants]);
+  }, [myRole, navigate, publicKeyStore?.size, participants.length]);
 };
 
 const HandshakeForGuest = () => {

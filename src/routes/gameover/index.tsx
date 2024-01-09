@@ -2,7 +2,7 @@ import { useWinner } from "../../hooks/useWinner";
 import { useFindParticipantById } from "../../hooks/useOviceObject";
 import { ParticipantWithRoleStack } from "../../components/ParticipantWithRoleStack";
 import { useGameRole } from "../../hooks/useGameRole";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 
 
 export const Gameover = () => {
@@ -29,6 +29,12 @@ export const Gameover = () => {
         })
       }
       </Stack>
+      <Button
+        variant="text"
+        onClick={() => {
+          window.location.reload();
+        }}
+      >New game</Button>
     </div>
   );
 };

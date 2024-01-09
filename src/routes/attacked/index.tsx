@@ -8,11 +8,13 @@ export const Attacked = () => {
   const lastDeadParticipant = useLastExecuted();
   const navigate = useNavigate();
 
-  if (lastDeadParticipant === undefined) {
-    return (<h1>No one is attacked</h1>);
-  }
   return (
-    <div> <DeadParticipantStack participant={lastDeadParticipant} />
+    <div> 
+      { lastDeadParticipant === undefined ? (
+        <h1>No one is attacked</h1>
+      ) : (
+      <DeadParticipantStack participant={lastDeadParticipant} />
+      )}
       <br/>
       <Button variant="contained" color="primary" onClick={() => {
         navigate('/day');

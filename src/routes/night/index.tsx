@@ -3,17 +3,19 @@ import { useGameRole } from "../../hooks/useGameRole";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { WolfNight, type WolfAction } from "../../components/wolf";
+import { HunterNight, type HunterAction } from "../../components/hunter"; 
 
 export const Night = () => {
   const { myRole } = useGameRole();
   const navigate = useNavigate();
+  const next = "/attacked";
 
   const toNavigate = useCallback(() => {
-    navigate("/waiting", { state: { next: "/day" } });
+    navigate("/waiting", { state: { next } });
   }, [navigate]);
 
   useEffect(() => {
-    if (myRole === undefined || myRole.role === "seer" || myRole.role === "wolf") {
+    if (myRole === undefined || myRole.role === "seer" || myRole.role === "wolf" || myRole.role === "hunter") {
       return;
     }
     toNavigate();
@@ -29,7 +31,15 @@ export const Night = () => {
     return (
       <WolfNight
         onClick={(action: WolfAction) => {
-          navigate("/waiting", { state: { action, next: "/day" } });
+          navigate("/waiting", { state: { action, next } });
+        }}
+      />
+    );
+  } else if (myRole?.role === "hunter") {
+    return (
+      <HunterNight
+        onClick={(action: HunterAction) => {
+          navigate("/waiting", { state: { action, next } });
         }}
       />
     );
