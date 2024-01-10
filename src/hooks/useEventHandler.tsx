@@ -86,8 +86,10 @@ const useRolesEvent = () => {
         }
         if (message.type === "roles") {
           const roles = new Map<string, GameRole>(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            Object.entries(JSON.parse(await decrypt(message.roles, privateKey))),
+            Object.entries(
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+              JSON.parse(await decrypt(message.roles, privateKey)),
+            ),
           );
           setGameRoles(roles);
         }

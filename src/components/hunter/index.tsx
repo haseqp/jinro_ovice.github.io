@@ -18,19 +18,19 @@ export const HunterNight = ({
     <div>
       <h1>Select someone to protect</h1>
       <Stack spacing={2}>
-      {protectableParticipants.map((participant: Participant) => (
-        <SelectableParticipantStack
-          key={participant.id}
-          participant={participant}
-          onClick={() => {
-            protect(participant.id);
-            onClick?.({
-              type: "protect",
-              targetId: participant.id,
-            });
-          }}
-        />
-      ))}
+        {protectableParticipants.map((participant: Participant) => (
+          <SelectableParticipantStack
+            key={participant.id}
+            participant={participant}
+            onClick={() => {
+              protect(participant.id);
+              onClick?.({
+                type: "protect",
+                targetId: participant.id,
+              });
+            }}
+          />
+        ))}
       </Stack>
     </div>
   );

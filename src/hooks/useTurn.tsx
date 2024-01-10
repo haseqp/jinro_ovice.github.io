@@ -8,11 +8,8 @@ const increaseTurnAtom = atom(
   },
 );
 
-
 export const useTurn = () => {
   const [turn, increaseTurn] = useAtom(increaseTurnAtom);
 
   return { turn, increaseTurn };
 };
-
-

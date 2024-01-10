@@ -1,6 +1,5 @@
 import { Button, Stack } from "@mui/material";
 import { SeerNight } from "../../components/seer";
-import { HunterNight } from "../../components/hunter";
 import { useGameRole } from "../../hooks/useGameRole";
 import type { GameRole } from "../../hooks/useGameRole";
 import { useCallback, useEffect, useState } from "react";
@@ -45,7 +44,6 @@ export const WolfNight = ({ onClick }: { onClick: () => void }) => {
               <ParticipantStack key={wolf.id} participant={wolf} />
             ))}
           </Stack>
-
         </>
       )}
       <Button
@@ -72,11 +70,10 @@ export const FirstNight = () => {
     if (myRole === undefined) {
       return;
     }
-    if (myRole.role === "wolf" || myRole.role === "seer" || myRole.role === "hunter") {
+    if (myRole.role === "wolf" || myRole.role === "seer") {
       return;
     }
     toNavigate();
-
   }, [toNavigate, myRole]);
 
   if (myRole === undefined) {
@@ -85,8 +82,6 @@ export const FirstNight = () => {
     return <WolfNight onClick={toNavigate} />;
   } else if (myRole.role === "seer") {
     return <SeerNight onClick={toNavigate} />;
-  } else if (myRole.role === "hunter") {
-    return <HunterNight onClick={toNavigate} />;
   } else {
     return null;
   }

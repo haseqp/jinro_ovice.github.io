@@ -4,7 +4,6 @@ import { ParticipantWithRoleStack } from "../../components/ParticipantWithRoleSt
 import { useGameRole } from "../../hooks/useGameRole";
 import { Button, Stack } from "@mui/material";
 
-
 export const Gameover = () => {
   const winner = useWinner();
   const { gameRoles } = useGameRole();
@@ -15,26 +14,30 @@ export const Gameover = () => {
   }
   return (
     <div>
-    <h1>{winner} team is won</h1>
+      <h1>{winner} team is won</h1>
       <Stack spacing={2}>
-      {
-        Array.from(gameRoles.values()).map((gameRole) => {
+        {Array.from(gameRoles.values()).map((gameRole) => {
           const participant = findParticipantById(gameRole.id);
           if (participant === undefined) {
             return null;
           }
           return (
-            <ParticipantWithRoleStack key={gameRole.id} participant={participant} gameRole={gameRole}/>
+            <ParticipantWithRoleStack
+              key={gameRole.id}
+              participant={participant}
+              gameRole={gameRole}
+            />
           );
-        })
-      }
+        })}
       </Stack>
       <Button
         variant="text"
         onClick={() => {
           window.location.reload();
         }}
-      >New game</Button>
+      >
+        New game
+      </Button>
     </div>
   );
 };

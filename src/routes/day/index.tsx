@@ -21,15 +21,16 @@ export const Day = () => {
     <div>
       <h1>Vote anyone to execute as a victim</h1>
       <Stack spacing={2}>
-      {executables.map((participant: Participant) => (
-        <SelectableParticipantStack key={participant.id}
-          participant={participant}
-          onClick={() => {
-            const action = { action: "vote", targetId: participant.id };
-            navigate("/waiting", { state: { action, next: "/executed" } });
-          }}
-        />
-      ))}
+        {executables.map((participant: Participant) => (
+          <SelectableParticipantStack
+            key={participant.id}
+            participant={participant}
+            onClick={() => {
+              const action = { action: "vote", targetId: participant.id };
+              navigate("/waiting", { state: { action, next: "/executed" } });
+            }}
+          />
+        ))}
       </Stack>
     </div>
   );

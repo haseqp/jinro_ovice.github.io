@@ -58,7 +58,10 @@ export const useAction = () => {
       if (gameRoles === undefined) {
         return;
       }
-      const aliveCount = Array.from(gameRoles.values()).reduce((acc:number, cur: GameRole) => acc + ((cur.isDead ?? false) ? 0 : 1), 0);
+      const aliveCount = Array.from(gameRoles.values()).reduce(
+        (acc: number, cur: GameRole) => acc + (cur.isDead ?? false ? 0 : 1),
+        0,
+      );
 
       if (
         actions.filter((a: Action) => a.turn === turn).length !== aliveCount
@@ -85,7 +88,9 @@ export const useAction = () => {
   const setActionForId = useCallback(
     (turn: number, id: string, action: string, targetId?: string) => {
       setActions((old: Action[]) => {
-        if (old.filter((a: Action) => a.turn === turn && a.id === id).length !== 0) {
+        if (
+          old.filter((a: Action) => a.turn === turn && a.id === id).length !== 0
+        ) {
           return old;
         }
         const gameRole = gameRoles.get(id);
@@ -93,8 +98,8 @@ export const useAction = () => {
           return old;
         }
         const newActions = [
-        ...old,
-        { action, id, turn, targetId: targetId ?? id },
+          ...old,
+          { action, id, turn, targetId: targetId ?? id },
         ];
         act(newActions, turn);
         return newActions;

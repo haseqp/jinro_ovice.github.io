@@ -5,22 +5,25 @@ import { useWinner } from "./useWinner";
 import { Provider } from "jotai";
 import type { ReactNode } from "react";
 
-describe('useWinner', () => {
+describe("useWinner", () => {
   const setup = () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider>{children}</Provider>
     );
-    const hook = renderHook(() => {
-      const { setGameRoles } = useGameRole();
-      const winner = useWinner();
+    const hook = renderHook(
+      () => {
+        const { setGameRoles } = useGameRole();
+        const winner = useWinner();
 
-      return { setGameRoles, winner };
-    }, { wrapper });
+        return { setGameRoles, winner };
+      },
+      { wrapper },
+    );
 
     return hook;
   };
 
-  it('should return wolf if half players are wolf', () => {
+  it("should return wolf if half players are wolf", () => {
     const hook = setup();
     hook.result.current.setGameRoles(
       new Map([
@@ -30,33 +33,33 @@ describe('useWinner', () => {
       ]),
     );
     hook.rerender();
-    
-    expect(hook.result.current.winner).toBe('wolf');
+
+    expect(hook.result.current.winner).toBe("wolf");
   });
-  it('should return villager if all players are villager', () => {
+  it("should return villager if all players are villager", () => {
     const hook = setup();
     hook.result.current.setGameRoles(
       new Map([
         ["1", { id: "1", role: "wolf", sortKey: "1", isDead: true }],
         ["2", { id: "2", role: "villager", sortKey: "2" }],
-        ["3", { id: "3", role: "seer", sortKey: "3"}],
+        ["3", { id: "3", role: "seer", sortKey: "3" }],
       ]),
     );
     hook.rerender();
-    
-    expect(hook.result.current.winner).toBe('villager');
+
+    expect(hook.result.current.winner).toBe("villager");
   });
-  it('should return undefiend if all game is not yet over', () => {
+  it("should return undefiend if all game is not yet over", () => {
     const hook = setup();
     hook.result.current.setGameRoles(
       new Map([
         ["1", { id: "1", role: "wolf", sortKey: "1" }],
         ["2", { id: "2", role: "villager", sortKey: "2" }],
-        ["3", { id: "3", role: "seer", sortKey: "3"}],
+        ["3", { id: "3", role: "seer", sortKey: "3" }],
       ]),
     );
     hook.rerender();
-    
+
     expect(hook.result.current.winner).toBe(undefined);
   });
 });

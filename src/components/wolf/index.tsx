@@ -18,18 +18,18 @@ export const WolfNight = ({
     <div>
       <h1>Select someone to attack</h1>
       <Stack spacing={2}>
-      {attackableParticipants.map((participant: Participant) => (
-        <SelectableParticipantStack
-          key={participant.id}
-          participant={participant}
-          onClick={() => {
-            onClick({
-              type: "attack",
-              targetId: participant.id,
-            });
-          }}
-        />
-      ))}
+        {attackableParticipants.map((participant: Participant) => (
+          <SelectableParticipantStack
+            key={participant.id}
+            participant={participant}
+            onClick={() => {
+              onClick({
+                type: "attack",
+                targetId: participant.id,
+              });
+            }}
+          />
+        ))}
       </Stack>
     </div>
   );

@@ -9,16 +9,16 @@ export const useWolf = () => {
 
   const attackableParticipants = useMemo(
     () =>
-      participants.filter(
-        (participant: Participant) => {
-          const gameRole = gameRoles.get(participant.id);
-          return !participant.isSelf &&
-            !(gameRole?.isDead ?? false) &&
-            gameRole?.role !== "wolf";
-        }
-      ),
+      participants.filter((participant: Participant) => {
+        const gameRole = gameRoles.get(participant.id);
+        return (
+          !participant.isSelf &&
+          !(gameRole?.isDead ?? false) &&
+          gameRole?.role !== "wolf"
+        );
+      }),
     [participants, gameRoles],
   );
 
-  return {attackableParticipants};
+  return { attackableParticipants };
 };

@@ -6,13 +6,18 @@ import { useAtom } from "jotai";
 import { useGameRole } from "./useGameRole";
 
 describe("useSeer", () => {
-
   const setup = () => {
     const hook = renderHook(() => {
       const [participants, setParticipants] = useAtom(participantsAtom);
       const { setGameRoles } = useGameRole();
       const { seeRole, seeableParticipants } = useSeer();
-      return { participants, setParticipants, setGameRoles, seeRole, seeableParticipants };
+      return {
+        participants,
+        setParticipants,
+        setGameRoles,
+        seeRole,
+        seeableParticipants,
+      };
     });
     hook.result.current.setParticipants([
       { name: "A", id: "1", avatar_url: "", isSelf: false },
@@ -35,15 +40,15 @@ describe("useSeer", () => {
   it("should return the role of a participant", () => {
     const hook = setup();
     expect(hook.result.current.seeableParticipants).toMatchObject([
-      { id: "1"},
-      { id: "2"}
+      { id: "1" },
+      { id: "2" },
     ]);
     expect(hook.result.current.seeRole("2")).toBe("villager");
 
     hook.rerender();
 
     expect(hook.result.current.seeableParticipants).toMatchObject([
-      { id: "1"}
+      { id: "1" },
     ]);
   });
 });

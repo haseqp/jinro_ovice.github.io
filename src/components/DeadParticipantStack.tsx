@@ -8,7 +8,11 @@ export const DeadParticipantStack = ({
 }) => {
   return (
     <Stack direction="row">
-      <Avatar style={{filter: `grayscale(1)` }} src={participant.avatar_url} alt={participant.name} />
+      <Avatar
+        style={{ filter: `grayscale(1)` }}
+        src={participant.avatar_url}
+        alt={participant.name}
+      />
       <Box fontSize="h6.fontSize" m={1}>
         {participant.name}
       </Box>
