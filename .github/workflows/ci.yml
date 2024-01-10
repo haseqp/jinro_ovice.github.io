@@ -25,11 +25,8 @@ jobs:
           cache: 'yarn'
       - name: install
         run: yarn --immutable
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v2
       - name: test
-        run: yarn test --coverage --max-workers ${{ steps.cpu-cores.outputs.count }} --ci
+        run: yarn test
 
   lint:
     runs-on: ubuntu-latest
