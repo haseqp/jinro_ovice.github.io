@@ -24,6 +24,7 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const started = useAtomValue(startedAtom);
+  const debug: boolean = Boolean(process.env.REACT_APP_DEBUG);
 
   useEffect(() => {
     if (!started && location.pathname !== "/") {
@@ -49,7 +50,7 @@ function App() {
         </Routes>
       </Suspense>
       <br />
-      <Debug />
+      {debug && <Debug />}
     </>
   );
 }
