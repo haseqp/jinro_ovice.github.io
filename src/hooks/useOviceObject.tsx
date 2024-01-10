@@ -11,20 +11,23 @@ export interface Participant {
 export const participantsAtom = atom<Participant[]>([]);
 
 participantsAtom.onMount = (update: (value: Participant[]) => void) => {
-  update([
-    {
-      name: "Alexel Konoe",
-      id: "1",
-      avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
-      isSelf: true,
-    },
-    {
-      name: "Mula Flaga",
-      id: "2",
-      avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
-      isSelf: false,
-    },
-  ]);
+  const debug = Boolean(process.env.REACT_APP_DEBUG);
+  if (debug) {
+    update([
+      {
+        name: "Alexel Konoe",
+        id: "1",
+        avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
+        isSelf: true,
+      },
+      {
+        name: "Mula Flaga",
+        id: "2",
+        avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
+        isSelf: false,
+      },
+    ]);
+  }
 };
 
 export const useFindParticipantById = () => {
