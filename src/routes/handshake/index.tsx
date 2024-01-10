@@ -58,7 +58,7 @@ const useNavigateToShowRole = () => {
       return;
     }
     navigate("/showRole");
-  }, [myRole, navigate, publicKeyStore?.size, participants.length]);
+  });
 };
 
 const HandshakeForGuest = () => {
@@ -78,7 +78,6 @@ const HandshakeForHost = () => {
     [publicKeyStore],
   );
   const roles = useGenerateGameRoles(ids);
-  const { setGameRoles } = useGameRole();
 
   useHandshake();
   useNavigateToShowRole();
@@ -108,7 +107,7 @@ const HandshakeForHost = () => {
         console.error(e);
       }
     })();
-  }, [publicKeyStore, participants, roles, encrypt, emit, setGameRoles]);
+  }, [publicKeyStore, participants, roles, encrypt, emit]);
 
   return null;
 };

@@ -21,7 +21,7 @@ const AddParticipantButton = () => {
         const name = uniqueNamesGenerator({
           dictionaries: [adjectives, colors, animals],
         });
-        const id = Math.random().toString(32).substring(2);
+        const id = Math.ceil(Math.random() * 1000000000).toString();
 
         setParticipants((old) => {
           return [
