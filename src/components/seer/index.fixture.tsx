@@ -1,7 +1,5 @@
 import { SeerNight } from ".";
 
 export default {
-  SeerNight: (
-    <SeerNight/>
-  )
+  SeerNight: <SeerNight />,
 };

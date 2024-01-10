@@ -1,24 +1,36 @@
-import React, { useEffect } from 'react';
-import { participantsAtom } from './hooks/useOviceObject';
-import { useSetAtom } from 'jotai';
-import { useGameRole } from './hooks/useGameRole';
-
+import React, { useEffect } from "react";
+import { participantsAtom } from "./hooks/useOviceObject";
+import { useSetAtom } from "jotai";
+import { useGameRole } from "./hooks/useGameRole";
 
 const Decorator = ({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }): JSX.Element => {
-
   const setParticipants = useSetAtom(participantsAtom);
   const { setGameRoles } = useGameRole();
 
   useEffect(() => {
-
     setParticipants([
-      { name: "A", id: "1", avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400", isSelf: true },
-      { name: "B", id: "2", avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400", isSelf: false },
-      { name: "C", id: "3", avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400", isSelf: false },
+      {
+        name: "A",
+        id: "1",
+        avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
+        isSelf: true,
+      },
+      {
+        name: "B",
+        id: "2",
+        avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
+        isSelf: false,
+      },
+      {
+        name: "C",
+        id: "3",
+        avatar_url: "https://avatars.githubusercontent.com/u/100000?s=400",
+        isSelf: false,
+      },
     ]);
 
     setGameRoles(
@@ -32,9 +44,7 @@ const Decorator = ({
 
   return (
     <>
-        <React.Suspense fallback="Loading...">
-          {children}
-        </React.Suspense>
+      <React.Suspense fallback="Loading...">{children}</React.Suspense>
     </>
   );
 };

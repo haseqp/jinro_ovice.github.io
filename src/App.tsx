@@ -28,24 +28,24 @@ function App() {
   useEffect(() => {
     if (!started && location.pathname !== "/") {
       // for page refresh
-      navigate('/');
+      navigate("/");
     }
   }, [started, location.pathname, navigate]);
 
   return (
     <>
-      <Suspense fallback={<Loading/>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/handshake" element={<Handshake />} />
-            <Route path="/showRole" element={<ShowRole />} />
-            <Route path="/firstNight" element={<FirstNight />} />
-            <Route path="/waiting" element={<Waiting />} />
-            <Route path="/day" element={<Day />} />
-            <Route path="/attacked" element={<Attacked />} />
-            <Route path="/executed" element={<Executed />} />
-            <Route path="/night" element={<Night />} />
-            <Route path="/gameover" element={<Gameover />} />
+          <Route path="/" element={<Start />} />
+          <Route path="/handshake" element={<Handshake />} />
+          <Route path="/showRole" element={<ShowRole />} />
+          <Route path="/firstNight" element={<FirstNight />} />
+          <Route path="/waiting" element={<Waiting />} />
+          <Route path="/day" element={<Day />} />
+          <Route path="/attacked" element={<Attacked />} />
+          <Route path="/executed" element={<Executed />} />
+          <Route path="/night" element={<Night />} />
+          <Route path="/gameover" element={<Gameover />} />
         </Routes>
       </Suspense>
       <br />

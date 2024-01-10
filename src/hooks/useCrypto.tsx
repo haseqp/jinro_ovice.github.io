@@ -18,24 +18,22 @@ const keyPairAtom = atom<Promise<CryptoKeyPair>>(generateKey());
 
 const publicKeyStores = atom<Map<string, CryptoKey>>(new Map());
 
-
-function concatBuffer(segments: ArrayBuffer[])
-{
-    let sumLength = 0;
-    for(let i = 0; i < segments.length; ++i){
-        sumLength += segments[i].byteLength;
-    }
-    const whole = new Uint8Array(sumLength);
-    let pos = 0;
-    for(let i = 0; i < segments.length; ++i){
-        whole.set(new Uint8Array(segments[i]),pos);
-        pos += segments[i].byteLength;
-    }
-    return whole.buffer;
+function concatBuffer(segments: ArrayBuffer[]) {
+  let sumLength = 0;
+  for (let i = 0; i < segments.length; ++i) {
+    sumLength += segments[i].byteLength;
+  }
+  const whole = new Uint8Array(sumLength);
+  let pos = 0;
+  for (let i = 0; i < segments.length; ++i) {
+    whole.set(new Uint8Array(segments[i]), pos);
+    pos += segments[i].byteLength;
+  }
+  return whole.buffer;
 }
 
 export const useCrypto = () => {
-  const keyPair =  useAtomValue(keyPairAtom);
+  const keyPair = useAtomValue(keyPairAtom);
   const encrypt = useCallback(async (message: string, publicKey: CryptoKey) => {
     const encoded = new TextEncoder().encode(message);
     const array = [];
@@ -52,13 +50,14 @@ export const useCrypto = () => {
           },
           publicKey,
           chunk,
-        ));
+        ),
+      );
     }
     return result;
   }, []);
   const decrypt = useCallback(
     async (message: ArrayBuffer[], privateKey: CryptoKey) => {
-      const segments:ArrayBuffer[] = [];
+      const segments: ArrayBuffer[] = [];
       for (const chunk of message) {
         const decoded = await window.crypto.subtle.decrypt(
           {
@@ -74,7 +73,12 @@ export const useCrypto = () => {
     [],
   );
 
-  return { publicKey: keyPair.publicKey, privateKey: keyPair.privateKey, encrypt, decrypt };
+  return {
+    publicKey: keyPair.publicKey,
+    privateKey: keyPair.privateKey,
+    encrypt,
+    decrypt,
+  };
 };
 
 export const usePublicKeyStore = () => {
@@ -82,16 +86,17 @@ export const usePublicKeyStore = () => {
 
   const addPublicKey = useCallback(
     (id: string, publicKey: CryptoKey) => {
-     setPublicKeyStore((old) => {
-      if (old.has(id)) {
-        return old;
-      }
-      const newMap = new Map(old);
-      newMap.set(id, publicKey);
-      return newMap;
-    });
-  },
-  [setPublicKeyStore]);
+      setPublicKeyStore((old) => {
+        if (old.has(id)) {
+          return old;
+        }
+        const newMap = new Map(old);
+        newMap.set(id, publicKey);
+        return newMap;
+      });
+    },
+    [setPublicKeyStore],
+  );
 
   const getPublicKey = useCallback(
     (id: string) => {

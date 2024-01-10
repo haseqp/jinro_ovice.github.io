@@ -1,7 +1,5 @@
 import { WolfNight } from ".";
 
 export default {
-  WolfNight: (
-    <WolfNight/>
-  )
+  WolfNight: <WolfNight />,
 };

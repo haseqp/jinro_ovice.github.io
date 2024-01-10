@@ -3,7 +3,7 @@ import { useGameRole } from "../../hooks/useGameRole";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { WolfNight, type WolfAction } from "../../components/wolf";
-import { HunterNight, type HunterAction } from "../../components/hunter"; 
+import { HunterNight, type HunterAction } from "../../components/hunter";
 
 export const Night = () => {
   const { myRole } = useGameRole();
@@ -15,7 +15,12 @@ export const Night = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (myRole === undefined || myRole.role === "seer" || myRole.role === "wolf" || myRole.role === "hunter") {
+    if (
+      myRole === undefined ||
+      myRole.role === "seer" ||
+      myRole.role === "wolf" ||
+      myRole.role === "hunter"
+    ) {
       return;
     }
     toNavigate();

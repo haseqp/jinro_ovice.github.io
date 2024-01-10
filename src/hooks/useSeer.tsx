@@ -33,7 +33,11 @@ const useSeeableParticipants = () => {
   const seeableParticipants = useMemo(() => {
     const seeables = new Array<Participant>();
     gameRoles?.forEach((_value: GameRole, key: string) => {
-      if (key !== myId && !sawParticpants.includes(key) && !(gameRoles.get(key)?.isDead ?? false)) {
+      if (
+        key !== myId &&
+        !sawParticpants.includes(key) &&
+        !(gameRoles.get(key)?.isDead ?? false)
+      ) {
         const found = participants.filter(
           (participant: Participant) => participant.id === key,
         )?.[0];

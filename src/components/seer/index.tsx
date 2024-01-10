@@ -28,22 +28,23 @@ export const SeerNight = ({ onClick }: { onClick: () => void }) => {
   return (
     <div>
       {selected === undefined ? (
-          <h1>Select anyone to see their role</h1>
+        <h1>Select anyone to see their role</h1>
       ) : (
         <h1>
           {selected.participant.name} is {selected.role}
         </h1>
       )}
-        <Stack spacing={2}>
-        {participants.map((participant: Participant) => 
+      <Stack spacing={2}>
+        {participants.map((participant: Participant) =>
           selected?.participant.id === participant.id ? (
             <ParticipantWithRoleStack
               key={participant.id}
               participant={participant}
-              gameRole={{role: selected.role }}/>
+              gameRole={{ role: selected.role }}
+            />
           ) : (
             <SelectableParticipantStack
-            key={participant.id}
+              key={participant.id}
               participant={participant}
               enabled={selected === undefined}
               onClick={() => {
@@ -51,18 +52,19 @@ export const SeerNight = ({ onClick }: { onClick: () => void }) => {
                 setSelected({ participant, role });
               }}
             />
-        ))}
-        </Stack>
-        {selected !== undefined && (
-          <Button
-            variant="text"
-            onClick={() => {
-              onClick();
-            }}
-          >
-            Next
-          </Button>
+          ),
         )}
+      </Stack>
+      {selected !== undefined && (
+        <Button
+          variant="text"
+          onClick={() => {
+            onClick();
+          }}
+        >
+          Next
+        </Button>
+      )}
     </div>
   );
 };

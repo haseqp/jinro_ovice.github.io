@@ -6,10 +6,12 @@ import {
   animals,
 } from "unique-names-generator";
 import { participantsAtom, useMyself } from "../../hooks/useOviceObject";
+import type { Participant } from "../../hooks/useOviceObject";
 import { useAtom, useAtomValue } from "jotai";
 import { useCrypto } from "../../hooks/useCrypto";
 import { useAction } from "../../hooks/useAction";
 import { useMemo } from "react";
+import { useGameRole } from "../../hooks/useGameRole";
 
 const AddParticipantButton = () => {
   const [, setParticipants] = useAtom(participantsAtom);
@@ -107,8 +109,15 @@ const VoteAny = () => {
   const { turn } = useAction();
   const { publicKey } = useCrypto();
   const { encrypt } = useCrypto();
+  const { gameRoles } = useGameRole();
 
-  const minId = useMemo(() => participants.filter(a => !(a.isDead ?? false)).sort((a, b) => a.id.localeCompare(b.id))[0]?.id, [participants]);
+  const minId = useMemo(
+    () =>
+      participants
+        .filter((a: Participant) => !(gameRoles.get(a.id)?.isDead ?? false))
+        .sort((a, b) => a.id.localeCompare(b.id))[0]?.id,
+    [participants, gameRoles],
+  );
   return (
     <Button
       variant="text"
@@ -139,7 +148,6 @@ const VoteAny = () => {
     </Button>
   );
 };
-
 
 export const Debug = () => {
   return (

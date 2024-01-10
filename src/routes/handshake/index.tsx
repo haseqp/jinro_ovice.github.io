@@ -22,7 +22,7 @@ const useHandshake = () => {
   const { publicKey } = useCrypto();
   const { addPublicKey } = usePublicKeyStore();
   const { myId } = useMyself();
-  const [ sentBroadcast, setSentBroadcast] = useAtom(sentBroadcastAtom);
+  const [sentBroadcast, setSentBroadcast] = useAtom(sentBroadcastAtom);
   const sentBroadcastRef = useRef(sentBroadcast);
 
   useEffect(() => {
@@ -119,5 +119,5 @@ export const Handshake = () => {
     return null;
   }
 
-  return isHost ? (<HandshakeForHost/>) : (<HandshakeForGuest/>);
+  return isHost ? <HandshakeForHost /> : <HandshakeForGuest />;
 };

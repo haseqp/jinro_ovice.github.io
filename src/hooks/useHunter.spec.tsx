@@ -12,7 +12,12 @@ describe("useHunter", () => {
       const { setGameRoles } = useGameRole();
       const { protectableParticipants, protect } = useHunter();
 
-      return { setParticipants, setGameRoles, protectableParticipants, protect };
+      return {
+        setParticipants,
+        setGameRoles,
+        protectableParticipants,
+        protect,
+      };
     });
     hook.result.current.setParticipants([
       { name: "A", id: "1", avatar_url: "", isSelf: true },
@@ -33,12 +38,10 @@ describe("useHunter", () => {
   it("should return attackable participants", () => {
     const hook = setup();
     expect(hook.result.current.protectableParticipants).toMatchObject([
-      { id: "2"}
+      { id: "2" },
     ]);
     hook.result.current.protect("2");
     hook.rerender();
     expect(hook.result.current.protectableParticipants.length).toBe(0);
-
   });
 });
-

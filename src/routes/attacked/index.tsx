@@ -1,4 +1,3 @@
-
 import { useLastExecuted } from "../../hooks/useExecute";
 import { DeadParticipantStack } from "../../components/DeadParticipantStack";
 import { Button } from "@mui/material";
@@ -9,16 +8,22 @@ export const Attacked = () => {
   const navigate = useNavigate();
 
   return (
-    <div> 
-      { lastDeadParticipant === undefined ? (
+    <div>
+      {lastDeadParticipant === undefined ? (
         <h1>No one is attacked</h1>
       ) : (
-      <DeadParticipantStack participant={lastDeadParticipant} />
+        <DeadParticipantStack participant={lastDeadParticipant} />
       )}
-      <br/>
-      <Button variant="contained" color="primary" onClick={() => {
-        navigate('/day');
-      }}>Next</Button>
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          navigate("/day");
+        }}
+      >
+        Next
+      </Button>
     </div>
   );
 };

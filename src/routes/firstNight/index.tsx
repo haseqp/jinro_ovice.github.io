@@ -44,7 +44,6 @@ export const WolfNight = ({ onClick }: { onClick: () => void }) => {
               <ParticipantStack key={wolf.id} participant={wolf} />
             ))}
           </Stack>
-
         </>
       )}
       <Button
@@ -75,7 +74,6 @@ export const FirstNight = () => {
       return;
     }
     toNavigate();
-
   }, [toNavigate, myRole]);
 
   if (myRole === undefined) {

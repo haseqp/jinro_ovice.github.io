@@ -33,7 +33,7 @@ describe("useWolf", () => {
   it("should return attackable participants", () => {
     const hook = setup();
     expect(hook.result.current.attackableParticipants).toMatchObject([
-      { id: "2"}
+      { id: "2" },
     ]);
   });
 });
